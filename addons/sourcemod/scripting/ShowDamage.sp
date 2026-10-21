@@ -5,6 +5,8 @@
 #include <regex>
 #include <gamma_colors>
 
+#pragma newdecls required
+
 public Plugin myinfo = 
 {
 	name = "Show Damage",
