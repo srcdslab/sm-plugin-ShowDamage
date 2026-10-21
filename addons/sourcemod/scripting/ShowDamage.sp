@@ -10,7 +10,7 @@ public Plugin myinfo =
 	name = "Show Damage",
 	author = "GAMMA CASE",
 	description = "Shows damage like in fortnite",
-	version = "1.2.0",
+	version = "1.2.1",
 	url = "http://steamcommunity.com/id/_GAMMACASE_/"
 }
 
@@ -34,7 +34,7 @@ ConVar g_cvAllowForBots,
 	g_cvCommands,
 	g_cvDistance,
 	g_cvPermission;
-Handle g_hCookie;
+Cookie g_hCookie;
 
 enum HitGroup
 {
@@ -60,7 +60,7 @@ public void OnPluginStart()
 	LoadTranslations("ShowDamage.phrases");
 
 	RegConsoleCommands();
-	g_hCookie = RegClientCookie("sm_show_damage_state", "Is showing damage disabled/enabled for a specific client", CookieAccess_Protected);
+	g_hCookie = new Cookie("sm_show_damage_state", "Is showing damage disabled/enabled for a specific client", CookieAccess_Protected);
 
 	HookEvent("player_connect_full", ConnectedFull_Hook);
 	HookEvent("player_hurt", PlayerHurt_Event);
@@ -121,7 +121,7 @@ public void RegConsoleCommands()
 	
 	char error[64];
 	RegexError ErrorCode;
-	Regex reg = CompileRegex("[a-zA-Z_0-9]+", 0, error, sizeof(error), ErrorCode);
+	Regex reg = new Regex("[a-zA-Z_0-9]+", 0, error, sizeof(error), ErrorCode);
 	if(error[0] != '\0')
 		SetFailState("[RegConsoleCommands] Regex error: \"%s\",  with error code: %i", error, ErrorCode);
 	
@@ -145,7 +145,7 @@ public Action ToggleHits(int client, int args)
 		
 		g_bState[client] = !g_bState[client];
 		IntToString(g_bState[client], buff, sizeof(buff));
-		SetClientCookie(client, g_hCookie, buff);
+		g_hCookie.Set(client, buff);
 		
 		GCReplyToCommand(client, "%t", (g_bState[client] ? "display_toggle_on" : "display_toggle_off"));
 	}
@@ -161,11 +161,11 @@ public void OnClientCookiesCached(int client)
 		return;
 	
 	char buff[4];
-	GetClientCookie(client, g_hCookie, buff, sizeof(buff));
+	g_hCookie.Get(client, buff, sizeof(buff));
 	
 	if(buff[0] == '\0')
 	{
-		SetClientCookie(client, g_hCookie, "1");
+		g_hCookie.Set(client, "1");
 		g_bState[client] = true;
 		g_bIsFirstTime[client] = true;
 	}
