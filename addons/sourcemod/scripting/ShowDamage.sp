@@ -12,7 +12,7 @@ public Plugin myinfo =
 	name = "Show Damage",
 	author = "GAMMA CASE",
 	description = "Shows damage like in fortnite",
-	version = "1.2.1",
+	version = "1.2.2",
 	url = "http://steamcommunity.com/id/_GAMMACASE_/"
 }
 
